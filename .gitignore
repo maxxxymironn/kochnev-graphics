@@ -1,0 +1,10 @@
+.*
+*~
+!.gitignore
+!.gitattributes
+!.clangd
+!.clang-format
+!.github
+*.zip
+Build
+Libraries/** export-ignore
