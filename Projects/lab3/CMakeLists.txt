@@ -6,11 +6,11 @@ file(GLOB_RECURSE HEADERS "[^.]*.hpp")
 file(GLOB_RECURSE SOURCES "[^.]*.cpp")
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_SOURCE_DIR}/Assets
-    $<TARGET_FILE_DIR:${PROJECT_NAME}>/Assets
-)
+# add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+#    COMMAND ${CMAKE_COMMAND} -E copy_directory
+#    ${CMAKE_SOURCE_DIR}/Assets
+#    $<TARGET_FILE_DIR:${PROJECT_NAME}>/Assets
+# )
 
 target_link_libraries(${PROJECT_NAME} LINK_PRIVATE nfd)
 target_link_libraries(${PROJECT_NAME} LINK_PRIVATE raygui)
