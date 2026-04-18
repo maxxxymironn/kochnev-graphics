@@ -5,7 +5,6 @@
 
 void swap(Vec2& a, Vec2& b) {
     Vec2 temp = a;
-
     a = b;
     b = temp;
 }
@@ -30,11 +29,11 @@ bool clip(Vec2& A, Vec2& B, const Rectangle& border) {
     unsigned int codeB = codeKS(B, border);
 
     while (codeA | codeB) {
-        if (codeA & codeB)      // line isn't in border
+        if (codeA & codeB)      // line not in rectangle
             return false;
 
-        if (codeA == 0) {       // if A isn't in border
-            swap(A, B);
+        if (codeA == 0) {       // if first point in rectangle
+            swap(A, B);         //    then check second point
             std::swap(codeA, codeB);
         }
 
