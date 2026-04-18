@@ -1,7 +1,7 @@
 #pragma once
 
 #include "matrix.hpp"
-#include "math.h"
+#include <cmath>
 
 inline Mat3 translate(float Tx, float Ty) {
     Mat3 res = Mat3(1.f);

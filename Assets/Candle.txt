@@ -1,8 +1,6 @@
-frame 5.0 8.0
+frame 40 20
 
-#######################################
-#               Candle
-#######################################
+model 2.625 4 5.25 8 # width = 5, height = 8 => centerXY = (2.5, 4)
 # ========= neck =========
 color 150 75 0
 thickness 3
@@ -139,3 +137,27 @@ path 22
 2.25 3.5
 2.75 3.5
 3.5 2.75
+
+pushTransform
+rotate 90
+scale 6
+translate 36 12
+figure
+popTransform
+
+pushTransform
+rotate 30
+scale 3
+translate 7 0
+figure
+translate 16 0
+figure
+popTransform
+
+pushTransform
+scale 3
+translate 2 18
+figure
+translate 36 0
+figure
+pop translate
