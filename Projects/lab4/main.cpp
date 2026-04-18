@@ -1,5 +1,6 @@
 #include "figures.hpp"
 #include "transform.hpp"
+#include "clip.hpp"
 
 #include <nfd.h>
 #include <raygui.h>
@@ -19,10 +20,10 @@ struct Window {
 };
 
 void GetWindowInfo();
-void DrawFigure(const Figure& figure, const Mat3& T);
+void DrawFigure(const Figure& figure, const Mat3& T, const Rectangle& border);
 void CheckPressedKeys(Mat3& T, const Mat3& initT);
 
-void OpenFile(Mat3& T, Mat3& initT, Figure& figure, bool& toDraw);
+void OpenFile(Mat3& T, Mat3& initT, Figure& figure, const Rectangle& border, bool& toDraw);
 Figure readFromFile(const char* fileName);
 bool isIgnorableLine(const std::string& line);
 
@@ -35,6 +36,17 @@ int main() {
 
     bool toDraw = false;
 
+    // Figure drawing border info
+    const Rectangle border = {50.f, 50.f, 300.f, 300.f};
+    const Rectangle changedBorder = {
+        border.x, 
+        border.y, 
+        border.width + border.x, 
+        border.height + border.y
+    };
+
+    float aspectRect = border.width / border.height;
+
     // Figure info
     Figure figure;
     // matrixes for figure
@@ -46,10 +58,13 @@ int main() {
         ClearBackground(SKYBLUE);
 
         if (toDraw)
-            DrawFigure(figure, T);
+            DrawFigure(figure, T, changedBorder);
+        
+        DrawRectangleLinesEx(border, 5, BLACK);
 
-        if (GuiButton({Window::x - 140, 20, 120, 30}, "Open file"))
-            OpenFile(T, initT, figure, toDraw);
+        if (GuiButton({Window::x - 140, 20, 120, 30}, "Open file")) {
+            OpenFile(T, initT, figure, border, toDraw);
+        }
 
         EndDrawing();
 
@@ -74,25 +89,29 @@ void GetWindowInfo() {
     Window::aspect = Window::x / Window::y;
 }
 
-void DrawFigure(const Figure& figure, const Mat3& T) {
+void DrawFigure(const Figure& figure, const Mat3& T, const Rectangle& border) {
     for (const auto& lines : figure.paths) {
         Vec2 start = normalize(T * Vec3(lines.vertices[0], 1));
 
         for (const auto& line : lines.vertices) {
-            const Vec2 end = normalize(T * Vec3(line, 1));
-            DrawLineEx(
-                {start.x, start.y},
-                {end.x, end.y},
-                lines.thickness,
-                lines.color
-            );
+            Vec2 end = normalize(T * Vec3(line, 1));
+            Vec2 checkEnd = end;
+            
+            if (clip(start, checkEnd, border)) {
+                DrawLineEx(
+                    {start.x, start.y},
+                    {checkEnd.x, checkEnd.y},
+                    lines.thickness,
+                    lines.color
+                );
+            }
             
             start = end;
         }
     }
 }
 
-void OpenFile(Mat3& T, Mat3& initT, Figure& figure, bool& toDraw) {
+void OpenFile(Mat3& T, Mat3& initT, Figure& figure, const Rectangle& border, bool& toDraw) {
     nfdchar_t *outPath;
     nfdfilteritem_t filterItem[2] = {{"Text files", "txt"}, {"All files", "*"}};
     nfdresult_t result = NFD_OpenDialog(&outPath, filterItem, 2, nullptr);
@@ -102,11 +121,14 @@ void OpenFile(Mat3& T, Mat3& initT, Figure& figure, bool& toDraw) {
         NFD_FreePath(outPath);
 
         float figureAspect = figure.Vx / figure.Vy;
-        float S = figureAspect < Window::aspect ? Window::y / figure.Vy : Window::x / figure.Vx;
-        float Ty = S * figure.Vy;
+        float borderAspect = border.width / border.height;
+        float S = figureAspect < borderAspect ? border.height / figure.Vy 
+                                              : border.width / figure.Vx;
 
-        initT = translate(0, Ty) * scale(S, -S);
-        T = initT;
+        Mat3 T1 = translate(-figure.Vx / 2, -figure.Vy / 2);
+        Mat3 S1 = scale(S, -S);
+        Mat3 T2 = translate(border.width / 2 + border.x, border.height / 2 + border.y);
+        T = initT = T2 * (S1 * T1);
 
         toDraw = true;
     }
@@ -197,7 +219,7 @@ void CheckPressedKeys(Mat3& T, const Mat3& initT) {
     // RY -- Rotate by 0.05rad
     if (IsKeyDown(KEY_R) || IsKeyDown(KEY_Y)) {
         T = translate(-Window::cx, -Window::cy) * T;
-        T = IsKeyDown(KEY_Y) ? rotate(-0.05f) * T : rotate(0.05f) * T;
+        T = IsKeyDown(KEY_R) ? rotate(-0.05f) * T : rotate(0.05f) * T;
         T = translate(Window::cx, Window::cy) * T;
     }
 
