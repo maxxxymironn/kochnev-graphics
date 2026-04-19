@@ -155,10 +155,13 @@ pushTransform
 scale 1.3125
 pushTransform
 
+translate 8 0
+pushTransform
 rotate 30
-translate 6.9282 4
 figure
-translate 13.9564 8
+popTransform
+translate 16 0
+rotate 30
 figure
 popTransform
 
@@ -276,8 +279,8 @@ scale 1.0625
 pushTransform
 
 pushTransform
+translate 16 0
 rotate 30
-translate 13.9564 8
 figure
 popTransform
 
