@@ -22,7 +22,7 @@ std::vector<my::Model> readFromFile(const char* fileName);
 int main() {
     // Setting window
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(600, 600, "Kochnev Maxim 231 Lab4");
+    InitWindow(600, 600, "Kochnev Maxim 231 Lab6");
     SetWindowMinSize(
         static_cast<int>(Rect::left + Rect::right + 20.f),
         static_cast<int>(Rect::top + Rect::bottom + 30.f)
@@ -323,7 +323,7 @@ void OpenFile(Mat4& T, Mat4& initT, std::vector<my::Model>& models, bool& toDraw
     if (result == NFD_OKAY) {
         models = readFromFile(outPath);
         NFD_FreePath(outPath);
-        
+
         MyCamera::initWorkPars(T);
         initT = T = lookAt(MyCamera::S, MyCamera::P, MyCamera::u);
         toDraw = true;
