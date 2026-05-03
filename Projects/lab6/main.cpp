@@ -82,29 +82,22 @@ void CheckPressedKeys(Mat4& T, const Mat4& initT) {
     }
 
     if (IsKeyPressed(KEY_W)) {
-        if (IsKeyDown(KEY_LEFT_SHIFT)) {
-            T = lookAt(Vec3(0, 0, -0.1f), Vec3(0, 0, -1.1f), Vec3(0, 1, 0)) * T;
-        } else {
-            T = lookAt(Vec3(0, 0, -1), Vec3(0, 0, -2), Vec3(0, 1, 0)) * T;
-        }
+        T = IsKeyDown(KEY_LEFT_SHIFT) ? lookAt(Vec3(0, 0, -0.1f), Vec3(0, 0, -1.1f), Vec3(0, 1, 0)) * T
+                                      : lookAt(Vec3(0, 0, -1), Vec3(0, 0, -2), Vec3(0, 1, 0)) * T;
     } else if (IsKeyPressed(KEY_S)) {
         T = IsKeyDown(KEY_LEFT_SHIFT) ? lookAt(Vec3(0, 0, 0.1f), Vec3(0, 0, -0.9f), Vec3(0, 1, 0)) * T
                                       : lookAt(Vec3(0, 0, 1), Vec3(0, 0, 0), Vec3(0, 1, 0)) * T;
     }
     if (IsKeyPressed(KEY_A)) {
-        if (IsKeyDown(KEY_LEFT_SHIFT)) {
-            T = lookAt(Vec3(-0.1f, 0, 0), Vec3(-0.1f, 0, -0.1f), Vec3(0, 1, 0)) * T;
-        } else {
-            T = lookAt(Vec3(-1, 0, 0), Vec3(-1, 0, -1), Vec3(0, 1, 0)) * T;
-        }
+        T = IsKeyDown(KEY_LEFT_SHIFT) ? lookAt(Vec3(-0.1f, 0, 0), Vec3(-0.1f, 0, -1), Vec3(0, 1, 0)) * T
+                                      : lookAt(Vec3(-1, 0, 0), Vec3(-1, 0, -1), Vec3(0, 1, 0)) * T;
+            
     } else if (IsKeyPressed(KEY_D)) {
-        if (IsKeyDown(KEY_LEFT_SHIFT)) {
-            T = lookAt(Vec3(0.1f, 0, 0), Vec3(0.1f, 0, -0.1f), Vec3(0, 1, 0)) * T;
-        } else {
-            T = lookAt(Vec3(1, 0, 0), Vec3(1, 0, -1), Vec3(0, 1, 0)) * T;
-        }
+        T = IsKeyDown(KEY_LEFT_SHIFT) ? lookAt(Vec3(0.1f, 0, 0), Vec3(0.1f, 0, -1), Vec3(0, 1, 0)) * T
+                                      : lookAt(Vec3(1, 0, 0), Vec3(1, 0, -1), Vec3(0, 1, 0)) * T;
     }
 
+    // rotate camera by OZ
     if (IsKeyPressed(KEY_R)) {
         Vec3 u_new = Mat3(rotate(0.1f, Vec3(0, 0, 1))) * Vec3(0, 1, 0);
         T = lookAt(Vec3(0, 0, 0), Vec3(0, 0, -1), u_new) * T;
@@ -113,7 +106,8 @@ void CheckPressedKeys(Mat4& T, const Mat4& initT) {
         T = lookAt(Vec3(0, 0, 0), Vec3(0, 0, -1), u_new) * T;
     }
 
-    if (IsKeyPressed(KEY_T)) {          // rotate camera by OX
+    // rotate camera by OX
+    if (IsKeyPressed(KEY_T)) {
         if (IsKeyDown(KEY_LEFT_SHIFT)) {
             Mat4 M = rotateP(0.1f, Vec3(1, 0, 0), Vec3(0, 0, -MyCamera::dist));
             Vec3 u_new = Mat3(M) * Vec3(0, 1, 0);
@@ -139,7 +133,8 @@ void CheckPressedKeys(Mat4& T, const Mat4& initT) {
         }
     }
 
-    if (IsKeyPressed(KEY_F)) {          // rotate camera by OY 
+    // rotate camera by OY
+    if (IsKeyPressed(KEY_F)) {
         if (IsKeyDown(KEY_LEFT_SHIFT)) {
             Mat4 M = rotateP(0.1f, Vec3(0, 1, 0), Vec3(0, 0, -MyCamera::dist));
             Vec3 u_new = Mat3(M) * Vec3(0, 1, 0);
@@ -147,54 +142,36 @@ void CheckPressedKeys(Mat4& T, const Mat4& initT) {
             T = lookAt(S_new, Vec3(0, 0, -MyCamera::dist), u_new) * T;
         } else {
             Mat4 M = rotate(0.1f, Vec3(0, 1, 0));
-            Vec3 u_new = Mat3(M) * Vec3(0, 1, 0);
             Vec3 P_new = normalize(M * Vec4(0, 0, -1, 1));
-            T = lookAt(Vec3(0, 0, 0), P_new, u_new) * T;
+            T = lookAt(Vec3(0, 0, 0), P_new, Vec3(0, 1, 0)) * T;
         }
     } else if (IsKeyPressed(KEY_H)) {
         if (IsKeyDown(KEY_LEFT_SHIFT)) {
             Mat4 M = rotateP(-0.1f, Vec3(0, 1, 0), Vec3(0, 0, -MyCamera::dist));
-            Vec3 u_new = Mat3(M) * Vec3(0, 1, 0);
             Vec3 S_new = normalize(M * Vec4(0, 0, 0, 1));
-            T = lookAt(S_new, Vec3(0, 0, -MyCamera::dist), u_new) * T;
+            T = lookAt(S_new, Vec3(0, 0, -MyCamera::dist), Vec3(0, 1, 0)) * T;
         } else {
             Mat4 M = rotate(-0.1f, Vec3(0, 1, 0));
-            Vec3 u_new = Mat3(M) * Vec3(0, 1, 0);
             Vec3 P_new = normalize(M * Vec4(0, 0, -1, 1));
-            T = lookAt(Vec3(0, 0, 0), P_new, u_new) * T;
+            T = lookAt(Vec3(0, 0, 0), P_new, Vec3(0, 1, 0)) * T;
         }
     }
 
     if (IsKeyPressed(KEY_I)) {
-        if (IsKeyDown(KEY_LEFT_SHIFT)) {
-            --MyCamera::t;
-        } else {
-            ++MyCamera::t;
-        }
+        MyCamera::t = IsKeyDown(KEY_LEFT_SHIFT) ? MyCamera::t + 1
+                                                : MyCamera::t - 1;
     }
-
-    if (IsKeyPressed(KEY_J)) {
-        if (IsKeyDown(KEY_LEFT_SHIFT)) {
-            ++MyCamera::l;
-        } else {
-            --MyCamera::l;
-        }
-    }
-
     if (IsKeyPressed(KEY_K)) {
-        if (IsKeyDown(KEY_LEFT_SHIFT)) {
-            ++MyCamera::b;
-        } else {
-            --MyCamera::b;
-        }
+        MyCamera::b = IsKeyDown(KEY_LEFT_SHIFT) ? MyCamera::b + 1
+                                                : MyCamera::b - 1;
     }
-
+    if (IsKeyPressed(KEY_J)) {
+        MyCamera::l = IsKeyDown(KEY_LEFT_SHIFT) ? MyCamera::l + 1
+                                                : MyCamera::l - 1;
+    }
     if (IsKeyPressed(KEY_L)) {
-        if (IsKeyDown(KEY_LEFT_SHIFT)) {
-            ++MyCamera::r;
-        } else {
-            --MyCamera::r;
-        }
+        MyCamera::r = IsKeyDown(KEY_LEFT_SHIFT) ? MyCamera::r + 1
+                                                : MyCamera::r - 1;
     }
 
     if (IsKeyPressed(KEY_U)) {
@@ -257,6 +234,7 @@ void CheckPressedKeys(Mat4& T, const Mat4& initT) {
 }
 
 void DrawFigure(const Mat4& T, const std::vector<my::Model>& models) {
+    int count = 0;
     Mat4 proj;
     switch (MyCamera::pType) {
         case projType::Ortho: 
@@ -285,6 +263,7 @@ void DrawFigure(const Mat4& T, const std::vector<my::Model>& models) {
             Vec3 start_3D = normalize(TM * Vec4(lines.vertices[0], 1.f));
             Vec2 start = normalize(cdr * Vec3(Vec2(start_3D), 1.f));
             for (const auto line : lines.vertices) {
+                Vec3 e = TM * Vec4(line, 1.f);
                 Vec3 end_3D = normalize(TM * Vec4(line, 1.f));
                 Vec2 end = normalize(cdr * Vec3(Vec2(end_3D), 1.f));
                 Vec2 checkEnd = end;

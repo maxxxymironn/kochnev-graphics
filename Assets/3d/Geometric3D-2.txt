@@ -1,0 +1,109 @@
+camera 20 10 10 20 10 0 0 1 0
+screen 90 2 10 20
+
+########################################
+#            Cube figure 
+########################################
+color 0 0 0
+thickness 2
+
+model 0.5 0.5 0.5 1 1 1 
+path 10
+0 1 0
+1 1 0
+1 1 1
+0 1 1
+0 1 0
+0 0 0
+1 0 0
+1 0 1
+0 0 1
+0 1 1
+path 2
+0 0 0
+0 0 1
+path 2
+1 1 0
+1 0 0
+path 2
+1 1 1
+1 0 1
+
+########################################
+pushTransform
+rotate 90 0 0 1
+scale 2.625
+translate 36 12 -10
+figure
+
+popTransform
+pushTransform
+scale 1.3125
+pushTransform
+
+translate 8 0 0
+pushTransform
+rotate 30 0 0 1
+figure
+
+popTransform
+translate 16 0 -4
+rotate 30 0 0 1
+figure
+
+popTransform
+pushTransform
+translate 2 18 0
+figure
+
+translate 36 0 16
+figure
+
+popTransform
+popTransform
+########################################
+
+########################################
+#            Pyramide figure
+########################################
+color 0 0 0
+thickness 2
+
+model 0.5 0.433 0.4082 1 0.866 0.8165
+path 5
+0 0 0
+0.5 0.2887 0.8165
+1 0 0
+0.5 0.866 0
+0.5 0.2887 0.8165
+path 3
+0.5 0.866 0
+0 0 0
+1 0 0
+
+########################################
+pushTransform
+rotate 90 0 0 1
+scale 2.125
+translate 36 4 -3
+figure
+popTransform
+
+pushTransform
+scale 1.0625
+pushTransform
+
+pushTransform
+translate 16 0 -3
+rotate 30 0 0 1
+figure
+popTransform
+
+pushTransform
+translate 14 18 0
+figure
+translate 12 0 -5
+figure
+popTransform 
+popTransform # scale
+########################################

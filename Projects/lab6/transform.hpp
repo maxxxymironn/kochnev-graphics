@@ -89,7 +89,7 @@ inline Mat4 lookAt(Vec3 S, Vec3 P, Vec3 u) {
     Vec3 e3 = norm(S - P);
     Vec3 e1 = norm(cross(u, e3));
     Vec3 e2 = norm(cross(e3, e1));
-    
+
     Mat4 R = Mat4(
         Vec4(e1, 0),
         Vec4(e2, 0),
