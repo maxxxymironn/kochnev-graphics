@@ -88,11 +88,8 @@ void CheckPressedKeys(Mat4& T, const Mat4& initT) {
             T = lookAt(Vec3(0, 0, -1), Vec3(0, 0, -2), Vec3(0, 1, 0)) * T;
         }
     } else if (IsKeyPressed(KEY_S)) {
-        if (IsKeyDown(KEY_LEFT_SHIFT)) {
-            T = lookAt(Vec3(0, 0, 0.1f), Vec3(0, 0, -0.9f), Vec3(0, 1, 0)) * T;
-        } else {
-            T = lookAt(Vec3(0, 0, 1), Vec3(0, 0, 0), Vec3(0, 1, 0)) * T;
-        }
+        T = IsKeyDown(KEY_LEFT_SHIFT) ? lookAt(Vec3(0, 0, 0.1f), Vec3(0, 0, -0.9f), Vec3(0, 1, 0)) * T
+                                      : lookAt(Vec3(0, 0, 1), Vec3(0, 0, 0), Vec3(0, 1, 0)) * T;
     }
     if (IsKeyPressed(KEY_A)) {
         if (IsKeyDown(KEY_LEFT_SHIFT)) {
@@ -116,7 +113,7 @@ void CheckPressedKeys(Mat4& T, const Mat4& initT) {
         T = lookAt(Vec3(0, 0, 0), Vec3(0, 0, -1), u_new) * T;
     }
 
-    if (IsKeyPressed(KEY_T)) {
+    if (IsKeyPressed(KEY_T)) {          // rotate camera by OX
         if (IsKeyDown(KEY_LEFT_SHIFT)) {
             Mat4 M = rotateP(0.1f, Vec3(1, 0, 0), Vec3(0, 0, -MyCamera::dist));
             Vec3 u_new = Mat3(M) * Vec3(0, 1, 0);
@@ -142,7 +139,31 @@ void CheckPressedKeys(Mat4& T, const Mat4& initT) {
         }
     }
 
-    // TODO F/SHIFT+F, H/SHIFT+H
+    if (IsKeyPressed(KEY_F)) {          // rotate camera by OY 
+        if (IsKeyDown(KEY_LEFT_SHIFT)) {
+            Mat4 M = rotateP(0.1f, Vec3(0, 1, 0), Vec3(0, 0, -MyCamera::dist));
+            Vec3 u_new = Mat3(M) * Vec3(0, 1, 0);
+            Vec3 S_new = normalize(M * Vec4(0, 0, 0, 1));
+            T = lookAt(S_new, Vec3(0, 0, -MyCamera::dist), u_new) * T;
+        } else {
+            Mat4 M = rotate(0.1f, Vec3(0, 1, 0));
+            Vec3 u_new = Mat3(M) * Vec3(0, 1, 0);
+            Vec3 P_new = normalize(M * Vec4(0, 0, -1, 1));
+            T = lookAt(Vec3(0, 0, 0), P_new, u_new) * T;
+        }
+    } else if (IsKeyPressed(KEY_H)) {
+        if (IsKeyDown(KEY_LEFT_SHIFT)) {
+            Mat4 M = rotateP(-0.1f, Vec3(0, 1, 0), Vec3(0, 0, -MyCamera::dist));
+            Vec3 u_new = Mat3(M) * Vec3(0, 1, 0);
+            Vec3 S_new = normalize(M * Vec4(0, 0, 0, 1));
+            T = lookAt(S_new, Vec3(0, 0, -MyCamera::dist), u_new) * T;
+        } else {
+            Mat4 M = rotate(-0.1f, Vec3(0, 1, 0));
+            Vec3 u_new = Mat3(M) * Vec3(0, 1, 0);
+            Vec3 P_new = normalize(M * Vec4(0, 0, -1, 1));
+            T = lookAt(Vec3(0, 0, 0), P_new, u_new) * T;
+        }
+    }
 
     if (IsKeyPressed(KEY_I)) {
         if (IsKeyDown(KEY_LEFT_SHIFT)) {
