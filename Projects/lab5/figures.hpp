@@ -5,11 +5,11 @@
 #include <vector>
 
 struct Path {
-    std::vector<Vec2> vertices;
+    std::vector<Vec3> vertices;
     Color color;
     float thickness;
 
-    Path(std::vector<Vec2> vertices, Color color, float thickness)
+    Path(std::vector<Vec3> vertices, Color color, float thickness)
         : vertices(vertices)
         , color(color)
         , thickness(thickness) {}
@@ -32,8 +32,8 @@ namespace my {
         inline static float Vx;
         inline static float Vy;
         std::vector<Path> figure; // Picture members
-        Mat3 modelM;
+        Mat4 modelM;
     
-        Model(std::vector<Path> fig, Mat3 model) : figure(fig), modelM(model) {}
+        Model(std::vector<Path> fig, Mat4 modelMatrix) : figure(fig), modelM(modelMatrix) {}
     };
 }
