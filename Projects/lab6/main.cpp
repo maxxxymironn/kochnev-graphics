@@ -258,23 +258,38 @@ void DrawFigure(const Mat4& T, const std::vector<my::Model>& models) {
     Mat4 C = proj * T;
 
     for (const auto model : models) {
+        float globalObjectZ = model.modelM.row3.a;
         Mat4 TM = C * model.modelM;     // General model matrix
+        float globalCameraZ = TM.row3.a;
         for (const auto lines : model.figure) {
             Vec3 start_3D = normalize(TM * Vec4(lines.vertices[0], 1.f));
             Vec2 start = normalize(cdr * Vec3(Vec2(start_3D), 1.f));
             for (const auto line : lines.vertices) {
-                Vec3 e = TM * Vec4(line, 1.f);
                 Vec3 end_3D = normalize(TM * Vec4(line, 1.f));
                 Vec2 end = normalize(cdr * Vec3(Vec2(end_3D), 1.f));
                 Vec2 checkEnd = end;
-
-                if (clip(start, checkEnd, {Rect::left, Rect::top, Rect::width + Rect::left, Rect::height + Rect::top})) {
-                    DrawLineEx(
-                        {start.x, start.y},
-                        {checkEnd.x, checkEnd.y},
-                        lines.thickness,
-                        lines.color
-                    );
+                
+                // TODO: переделать это дерьмо
+                if (MyCamera::pType != projType::Ortho) {
+                    if (globalObjectZ < globalCameraZ + MyCamera::n) {
+                        if (clip(start, checkEnd, {Rect::left, Rect::top, Rect::width + Rect::left, Rect::height + Rect::top})) {
+                            DrawLineEx(
+                                {start.x, start.y},
+                                {checkEnd.x, checkEnd.y},
+                                lines.thickness,
+                                lines.color
+                            );
+                        }
+                    }
+                } else {
+                    if (clip(start, checkEnd, {Rect::left, Rect::top, Rect::width + Rect::left, Rect::height + Rect::top})) {
+                        DrawLineEx(
+                            {start.x, start.y},
+                            {checkEnd.x, checkEnd.y},
+                            lines.thickness,
+                            lines.color
+                        );
+                    }
                 }
 
                 start = end;

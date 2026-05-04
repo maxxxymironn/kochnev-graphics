@@ -122,7 +122,7 @@ inline Mat4 perspective(float fovy, float aspect, float n, float f) {
     return Mat4(
         Vec4(1 / (tanf(fovy / 2.f) * aspect), 0.f, 0.f, 0.f),
         Vec4(0.f, 1 / tanf(fovy / 2.f), 0.f, 0.f),
-        Vec4(0.f, 0.f, -(f = n) / (f - n), -2 * f * n / (f - n)),
+        Vec4(0.f, 0.f, -(f + n) / (f - n), -2 * f * n / (f - n)),
         Vec4(0.f, 0.f, -1.f, 0.f)
     );
 }
